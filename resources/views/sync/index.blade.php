@@ -3,9 +3,9 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-6 mb-2"> <h1>Sync Products</h1></div>
+            <div class="col-md-6 mb-2"> <h2>List Products API</h1></div>
             <div class="col-md-6 text-end mb-2">
-                <button class="btn btn-primary" id="syncBtn"><i class="fas fa-sync"></i> Sync</button>
+                <button class="btn btn-primary" id="syncBtn"><i class="fas fa-sync"></i> Import</button>
             </div>
             <div class="col-md-12">
                 <div id="loadingMessage" class="alert alert-info mt-3" style="display: none;">

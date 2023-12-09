@@ -60,8 +60,8 @@
                                     Master
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="masterDropdown">
-                                    <a class="dropdown-item" href="{{ route('product.index') }}">Product</a>
-                                    <a class="dropdown-item" href="{{ route('sync.index') }}">Sync Product</a>
+                                    <a class="dropdown-item" href="{{ route('product.index') }}">Products</a>
+                                    <a class="dropdown-item" href="{{ route('sync.index') }}">Import Product from API</a>
                                 </div>
                             </li>
                             <li class="nav-item">

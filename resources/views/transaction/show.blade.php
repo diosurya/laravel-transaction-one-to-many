@@ -55,8 +55,8 @@
                                 <td>{{ $detail->quantity }}</td>
                                 <td>{{ $detail->total_price }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-warning btn-sm edit-product" data-id="{{ $detail->id }}" data-quantity="{{ $detail->quantity }}">Edit</button>
-                                    <button type="button" class="btn btn-danger btn-sm delete-product" data-id="{{ $detail->id }}">Delete</button>
+                                    <button type="button" class="btn btn-warning btn-sm edit-product" data-id="{{ $detail->id }}" data-quantity="{{ $detail->quantity }}"><i class="fas fa-pencil"></i></button>
+                                    <button type="button" class="btn btn-danger btn-sm delete-product" data-id="{{ $detail->id }}"><i class="fas fa-trash"></i></button>
                                 </td>
                             </tr>
                         @endforeach
