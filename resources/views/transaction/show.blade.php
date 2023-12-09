@@ -2,52 +2,68 @@
 
 @section('content')
     <div class="container">
-        <h2>Transaction Detail</h2>
+        <div class="row">
+            <div class="col-md-6 mb-1">
+                <h2>Transaction Detail</h2>
+            </div>
+            <div class="col-md-6 text-end mb-1">
+                <h5> {{ $transaction->transaction_number }}</h5>
+            </div>
+        </div>
 
-        <div class="my-3">
-            <div class="row">
-                <div class="col-md-6 md-3">
-                    <p><strong>Transaction Number:</strong> {{ $transaction->transaction_number }}</p>
-                </div>
-                <div class="col-md-6 col-md-6 md-3">
-                    <p><strong>Customer Name:</strong> {{ $transaction->customer_name }}</p>
-                </div>
-                <div class="col-md-6 col-md-6 md-3">
-                    <p><strong>Date:</strong> {{ $transaction->date }}</p>
-                </div>
-                <div class="col-md-6 col-md-6 md-3">
-                    <p><strong>Total Price:</strong> {{ $transaction->total_price }}</p>
-                </div>
-                <div class="col-md-6 col-md-6 md-3">
-                    <p><strong>Total Quantity:</strong> {{ $transaction->total_quantity }}</p>
+        <div class="card bg-white px-5 pt-3 mb-3">
+            <div class="card-body">
+                <div class="my-3">
+                    <div class="row">
+                        <div class="col-md-6 col-md-6 mb-3">
+                            <h6>Customer Name</h6>
+                            <h5 class="fw-bold">{{ $transaction->customer_name }}</h5>
+                        </div>
+                        <div class="col-md-6 col-md-6 mb-3">
+                            <h6>Date</h6>
+                            <h5 class="fw-bold">{{ $transaction->date }}</h5>
+                        </div>
+                        <div class="col-md-6 col-md-6 mb-3">
+                            <h6>Total Price</h6>
+                            <h5 class="fw-bold">{{ $transaction->total_price }}</h5>
+                        </div>
+                        <div class="col-md-6 col-md-6 mb-3">
+                            <h6>Total Quantity</h6>
+                            <h5 class="fw-bold">{{ $transaction->total_quantity }}</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <h4>Products:</h4>
-        <table class="table" id="products-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($transaction->details as $detail)
-                    <tr>
-                        <td>{{ $detail->product->product_name }}</td>
-                        <td>{{ $detail->quantity }}</td>
-                        <td>{{ $detail->total_price }}</td>
-                        <td>
-                            <button type="button" class="btn btn-warning btn-sm edit-product" data-id="{{ $detail->id }}" data-quantity="{{ $detail->quantity }}">Edit</button>
-                            <button type="button" class="btn btn-danger btn-sm delete-product" data-id="{{ $detail->id }}">Delete</button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="card bg-white px-5 py-4">
+            <div class="card-body">
+                <h4 class="card-title">Products</h4>
+                <table class="table" id="products-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Quantity</th>
+                            <th>Total Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($transaction->details as $detail)
+                            <tr>
+                                <td>{{ $detail->product->product_name }}</td>
+                                <td>{{ $detail->quantity }}</td>
+                                <td>{{ $detail->total_price }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-warning btn-sm edit-product" data-id="{{ $detail->id }}" data-quantity="{{ $detail->quantity }}">Edit</button>
+                                    <button type="button" class="btn btn-danger btn-sm delete-product" data-id="{{ $detail->id }}">Delete</button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Edit Product -->

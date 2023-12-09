@@ -5,59 +5,71 @@
         <h2>Create Transaction</h2>
         <form action="{{ route('transaction.store') }}" method="post" id="transaction-form">
             @csrf
-
-            <div class="form-group">
-                <label for="customer_name">Customer Name</label>
-                <input type="text" name="customer_name" class="form-control" required>
+            <div class="card bg-white px-5 pt-3 mb-3">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group">
+                                <label for="customer_name">Customer Name</label>
+                                <input type="text" name="customer_name" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group mb-3">
+                                <label for="date">Date</label>
+                                <input type="date" name="date" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>   
+                </div>
             </div>
 
-            <div class="form-group mb-3">
-                <label for="date">Date</label>
-                <input type="date" name="date" class="form-control" required>
+            <div class="card bg-white px-5 py-4">
+                <div class="card-body">
+                    <h3 class="card-title">Product</h3>
+                    <div class="form-group">
+                        <table class="table table-responsive" id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Quantity</th>
+                                    <th>Total Price</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="product-row">
+                                    <td>
+                                        <select name="products[][product_id]" class="form-control product-select" required>
+                                            <option value="">Select Product</option>
+                                            @foreach ($products as $product)
+                                                <option value="{{ $product->id }}" data-price="{{ $product->price }}">{{ $product->product_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="products[][quantity]" class="form-control product-quantity" required>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="products[][total_price]" class="form-control product-total-price" readonly>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-success add-product">Add Product</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td>Total: <span id="total-amount">0</span></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
             </div>
-
-            <div class="form-group">
-                <table class="table" id="products-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                            <th>Total Price</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="product-row">
-                            <td>
-                                <select name="products[][product_id]" class="form-control product-select" required>
-                                    <option value="">Select Product</option>
-                                    @foreach ($products as $product)
-                                        <option value="{{ $product->id }}" data-price="{{ $product->price }}">{{ $product->product_name }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td>
-                                <input type="number" name="products[][quantity]" class="form-control product-quantity" required>
-                            </td>
-                            <td>
-                                <input type="text" name="products[][total_price]" class="form-control product-total-price" readonly>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-success add-product">Add Product</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2"></td>
-                            <td>Total: <span id="total-amount">0</span></td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
 
@@ -68,10 +80,8 @@
                 const productRow = $(this).closest('tr').clone();
                 productRow.find('.product-select, .product-quantity, .product-total-price').val('');
                 $('#products-table tbody').append(productRow);
-                
-                $('#products-table tbody .add-product').prop('disabled', true);
-                
-                $('#products-table tbody .add-product').last().prop('disabled', false);
+                // remove btn add produk != last
+                $('#products-table tbody .add-product').not(':last').prop('disabled', true).remove();
             });
     
             $('#products-table tbody').on('input', '.product-quantity', function () {

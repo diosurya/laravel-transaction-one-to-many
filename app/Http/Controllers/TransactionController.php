@@ -26,7 +26,7 @@ class TransactionController extends Controller
 
             return DataTables::of($transactions)
                 ->addColumn('action', function ($transaction) {
-                    return '<a href="' . route('transaction.show', $transaction->id) . '" class="btn btn-sm btn-info">View Details</a>';
+                    return '<a href="' . route('transaction.show', $transaction->id) . '" class="btn btn-sm btn-info">Details</a>';
                 })
                 ->toJson();
         } catch (\Exception $e) {

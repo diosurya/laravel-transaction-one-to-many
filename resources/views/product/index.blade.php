@@ -23,11 +23,11 @@
     <div class="container">
         
         <div class="row">
-            <div class="col-md-6"><h1>Product List</h1></div>
-            <div class="col-md-6 text-end">
+            <div class="col-md-6 mb-2"><h1>Product List</h1></div>
+            <div class="col-md-6 text-end mb-2">
                 <a href="{{ route('product.create') }}" class="btn btn-primary">Add Product</a>
             </div>
-            <div class="col-md-12 my-3 notif">
+            <div class="col-md-12 notif">
                 @if(session('success'))
                     <div class="alert alert-dismissible alert-success mt-3">
                         {{ session('success') }}
@@ -36,16 +36,20 @@
                 @endif
             </div>
         </div>
-        <table id="products-table" class="table mt-3">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Product Name</th>
-                    <th>Price</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-        </table>
+        <div class="card bg-white px-5 pt-3 mb-3">
+            <div class="card-body">
+                <table id="products-table" class="table pt-2">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
 
 

@@ -3,11 +3,11 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-6"> <h1>Sync Products</h1></div>
-            <div class="col-md-6 text-end">
-                <button class="btn btn-primary" id="syncBtn">Sync</button>
+            <div class="col-md-6 mb-2"> <h1>Sync Products</h1></div>
+            <div class="col-md-6 text-end mb-2">
+                <button class="btn btn-primary" id="syncBtn"><i class="fas fa-sync"></i> Sync</button>
             </div>
-            <div class="col-md-12 my-3">
+            <div class="col-md-12">
                 <div id="loadingMessage" class="alert alert-info mt-3" style="display: none;">
                     Syncing, please wait...
                 </div>
@@ -22,16 +22,19 @@
                 </div>
             </div>
         </div>
-
-        <table id="productsTable" class="table mt-3">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
-        </table>
+        <div class="card bg-white px-5 pt-3 mb-3">
+            <div class="card-body">
+                <table id="productsTable" class="table pt-2">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
 
     <script>

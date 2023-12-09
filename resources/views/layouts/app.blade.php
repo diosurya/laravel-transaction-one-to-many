@@ -27,6 +27,16 @@
 
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+
+
+    <style>
+        th{
+            background-color: #fff !important;
+        }
+        td{
+            background-color: #fff !important;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
@@ -40,21 +50,26 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="masterDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Master
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="masterDropdown">
-                                <a class="dropdown-item" href="{{ route('product.index') }}">Product</a>
-                                <a class="dropdown-item" href="{{ route('sync.index') }}">Sync Product</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('transaction.index') }}">Transactions</a>
-                        </li>
-                    </ul>
+                    @guest
+                    @else
+                    @if (Route::has('login'))
+                        <!-- Left Side Of Navbar -->
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="masterDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Master
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="masterDropdown">
+                                    <a class="dropdown-item" href="{{ route('product.index') }}">Product</a>
+                                    <a class="dropdown-item" href="{{ route('sync.index') }}">Sync Product</a>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('transaction.index') }}">Transactions</a>
+                            </li>
+                        </ul>
+                    @endif
+                    @endguest
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
