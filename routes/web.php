@@ -18,7 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sync/sync', [SyncProductController::class, 'sync'])->name('sync.sync');
 
     Route::resource('transaction', TransactionController::class);
-    Route::get('/transaction/data', [TransactionController::class, 'dataTable'])->name('transaction.dataTable');
+    Route::get('/transaction/data/get', [TransactionController::class, 'dataTable'])->name('transaction.dataTable');
     Route::put('/transaction/editproduct/{id}', [TransactionController::class, 'editProduct'])->name('transaction.editProduct');
     Route::delete('/transaction/deleteproduct/{id}', [TransactionController::class, 'deleteProduct'])->name('transaction.deleteProduct');
 });
