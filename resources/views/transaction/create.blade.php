@@ -20,7 +20,7 @@
                 <table class="table" id="products-table">
                     <thead>
                         <tr>
-                            <th>Product</th>
+                            <th>Name</th>
                             <th>Quantity</th>
                             <th>Total Price</th>
                             <th>Action</th>
@@ -69,9 +69,9 @@
                 productRow.find('.product-select, .product-quantity, .product-total-price').val('');
                 $('#products-table tbody').append(productRow);
                 
-                $('#products-table tbody .add-product').prop('disabled', false);
+                $('#products-table tbody .add-product').prop('disabled', true);
                 
-                $('#products-table tbody .add-product').last().prop('disabled', true);
+                $('#products-table tbody .add-product').last().prop('disabled', false);
             });
     
             $('#products-table tbody').on('input', '.product-quantity', function () {
