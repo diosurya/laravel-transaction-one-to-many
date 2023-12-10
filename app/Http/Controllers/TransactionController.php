@@ -170,6 +170,7 @@ class TransactionController extends Controller
             $detail->delete();
 
             $this->recalculateTransactionTotalPrice($transactionId);
+            $this->recalculateTransactionTotalQuantity($transactionId);
 
             return response()->json(['message' => 'Product deleted successfully']);
         } catch (\Exception $e) {
@@ -192,5 +193,20 @@ class TransactionController extends Controller
         }
 
         $transaction->update(['total_price' => $totalPrice]);
+    }
+
+    private function recalculateTransactionTotalQuantity($transactionId)
+    {
+        $transaction = Transaction::find($transactionId);
+
+        if (!$transaction) {
+            return;
+        }
+
+        // Sum the quantities of all details related to the transaction
+        $totalQuantity = $transaction->details()->sum('quantity');
+
+        // Update the total_quantity field in the transactions table
+        $transaction->update(['total_quantity' => $totalQuantity]);
     }
 }
