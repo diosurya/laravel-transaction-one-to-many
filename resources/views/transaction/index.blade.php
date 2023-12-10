@@ -17,6 +17,7 @@
                             <th>ID</th>
                             <th>Customer Name</th>
                             <th>Date</th>
+                            <th>Total Quanitity</th>
                             <th>Total Price</th>
                             <th>Action</th>
                         </tr>
@@ -36,6 +37,7 @@
                     { data: 'id', name: 'id' },
                     { data: 'customer_name', name: 'customer_name' },
                     { data: 'date', name: 'date' },
+                    { data: 'total_quantity', name: 'total_quantity' },
                     { data: 'total_price', name: 'total_price' },
                     { data: 'action', name: 'action', orderable: false, searchable: false },
                 ],

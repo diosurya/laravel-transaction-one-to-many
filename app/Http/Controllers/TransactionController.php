@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\TransactionDetail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -42,49 +43,57 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'customer_name' => 'required',
-            'date' => 'required|date',
-            'products_data.*.product_id' => 'required|exists:products,id',
-            'products_data.*.quantity' => 'required|integer|min:1',
-        ]);
+        try {
+            $request->validate([
+                'customer_name' => 'required',
+                'date' => 'required|date',
+                'products_data.*.product_id' => 'required|exists:products,id',
+                'products_data.*.quantity' => 'required|integer|min:1',
+            ]);
 
-        $transaction = Transaction::create([
-            'customer_name' => $request->input('customer_name'),
-            'date' => $request->input('date'),
-            'total_price' => 0,
-            'total_quantity' => 0,
-            'transaction_number' => $this->generateTransactionNumber(),
-        ]);
+            DB::beginTransaction();
 
-        $productData = [];
-        $totalQuantity = 0;
-        $products_data = json_decode($request->input('products_data'));
+            $transaction = Transaction::create([
+                'customer_name' => $request->input('customer_name'),
+                'date' => $request->input('date'),
+                'total_price' => 0,
+                'total_quantity' => 0,
+                'transaction_number' => $this->generateTransactionNumber(),
+            ]);
 
-        foreach ($products_data as $product) {
-            $productDetail = Product::findOrFail($product->product_id);
-            $totalPrice = $productDetail->price * $product->quantity;
+            $productData = [];
+            // $totalQuantity = 0;
+            $products_data = json_decode($request->input('products_data'));
 
-            $productData[] = [
-                'transaction_id' => $transaction->id,
-                'product_id' => $productDetail->id,
-                'quantity' => $product->quantity,
-                'total_price' => $totalPrice,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ];
+            foreach ($products_data as $product) {
+                $productDetail = Product::findOrFail($product->product_id);
+                $totalPrice = $productDetail->price * $product->quantity;
 
-            // $totalQuantity += $product->quantity;
+                $productData[] = [
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $productDetail->id,
+                    'quantity' => $product->quantity,
+                    'total_price' => $totalPrice,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ];
+
+                // $totalQuantity += $product->quantity;
+            }
+
+            TransactionDetail::insert($productData);
+
+            $transaction->update([
+                'total_price' => collect($productData)->sum('total_price'),
+                'total_quantity' => collect($productData)->sum('quantity'),
+            ]);
+            DB::commit();
+
+            return redirect()->route('transaction.index')->with('success', 'Transaction created successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('transaction.index')->with('error', 'Error creating transaction: ' . $e->getMessage());
         }
-
-        TransactionDetail::insert($productData);
-
-        $transaction->update([
-            'total_price' => collect($productData)->sum('total_price'),
-            'total_quantity' => collect($productData)->sum('quantity'),
-        ]);
-
-        return redirect()->route('transaction.index')->with('success', 'Transaction created successfully!');
     }
 
 
@@ -113,29 +122,35 @@ class TransactionController extends Controller
                 'quantity' => 'required|integer|min:1',
             ]);
 
+            DB::beginTransaction();
             $detail = TransactionDetail::find($id);
 
             if (!$detail) {
+                DB::rollBack();
                 return response()->json(['error' => 'Product not found'], 404);
             }
 
             $oldQuantity = $detail->quantity;
             $newQuantity = $request->quantity;
 
-            // Update quantity
-            $detail->update(['quantity' => $newQuantity]);
+            // Update qty detail_transactions
+            $detail->update([
+                'quantity' => $newQuantity,
+                'total_price' => $detail->product->price * $newQuantity,
+            ]);
 
-            $productDetail = Product::find($detail->product_id);
-            $newTotalPrice = $productDetail->price * $newQuantity;
-            $detail->update(['total_price' => $newTotalPrice]);
+            // Updt transactions
             $transaction = Transaction::find($detail->transaction_id);
             $transaction->total_quantity = $transaction->total_quantity - $oldQuantity + $newQuantity;
             $transaction->total_price = $transaction->details()->sum('total_price');
 
             $transaction->save();
 
+            DB::commit();
+
             return response()->json(['message' => 'Product updated successfully']);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
