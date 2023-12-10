@@ -124,13 +124,13 @@ class TransactionController extends Controller
 
             DB::beginTransaction();
             $detail = TransactionDetail::find($id);
+            $transactionId = $detail->transaction_id;
 
             if (!$detail) {
                 DB::rollBack();
                 return response()->json(['error' => 'Product not found'], 404);
             }
 
-            $oldQuantity = $detail->quantity;
             $newQuantity = $request->quantity;
 
             // Update qty detail_transactions
@@ -139,12 +139,9 @@ class TransactionController extends Controller
                 'total_price' => $detail->product->price * $newQuantity,
             ]);
 
-            // Updt transactions
-            $transaction = Transaction::find($detail->transaction_id);
-            $transaction->total_quantity = $transaction->total_quantity - $oldQuantity + $newQuantity;
-            $transaction->total_price = $transaction->details()->sum('total_price');
-
-            $transaction->save();
+            // Updt transactions total_price & qty
+            $this->recalculateTransactionTotalPrice($transactionId);
+            $this->recalculateTransactionTotalQuantity($transactionId);
 
             DB::commit();
 
@@ -159,7 +156,6 @@ class TransactionController extends Controller
     {
         try {
             $detail = TransactionDetail::find($id);
-
             if (!$detail) {
                 return response()->json(['error' => 'Product not found'], 404);
             }
@@ -187,7 +183,6 @@ class TransactionController extends Controller
         }
 
         $totalPrice = 0;
-
         foreach ($transaction->details as $detail) {
             $totalPrice += $detail->total_price;
         }
@@ -203,10 +198,7 @@ class TransactionController extends Controller
             return;
         }
 
-        // Sum the quantities of all details related to the transaction
         $totalQuantity = $transaction->details()->sum('quantity');
-
-        // Update the total_quantity field in the transactions table
         $transaction->update(['total_quantity' => $totalQuantity]);
     }
 }
