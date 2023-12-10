@@ -42,17 +42,12 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'customer_name' => 'required',
             'date' => 'required|date',
             'products_data.*.product_id' => 'required|exists:products,id',
             'products_data.*.quantity' => 'required|integer|min:1',
         ]);
-
-
-        $totalPrice = 0;
-        $totalQuantity = 0;
 
         $transaction = Transaction::create([
             'customer_name' => $request->input('customer_name'),
@@ -67,30 +62,26 @@ class TransactionController extends Controller
         $products_data = json_decode($request->input('products_data'));
 
         foreach ($products_data as $product) {
+            $productDetail = Product::findOrFail($product->product_id);
+            $totalPrice = $productDetail->price * $product->quantity;
+
             $productData[] = [
                 'transaction_id' => $transaction->id,
-                'product_id' => $product->product_id,
+                'product_id' => $productDetail->id,
                 'quantity' => $product->quantity,
-                'total_price' => $product->total_price,
+                'total_price' => $totalPrice,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];
 
-            $totalQuantity += $product->quantity;
+            // $totalQuantity += $product->quantity;
         }
 
         TransactionDetail::insert($productData);
 
-        foreach ($productData as &$product) {
-            $productDetail = Product::find($product['product_id']);
-            $product['total_price'] = $productDetail->price * $product['quantity'];
-            $totalPrice += $product['total_price'];
-        }
-
-
         $transaction->update([
-            'total_price' => $totalPrice,
-            'total_quantity' => $totalQuantity,
+            'total_price' => collect($productData)->sum('total_price'),
+            'total_quantity' => collect($productData)->sum('quantity'),
         ]);
 
         return redirect()->route('transaction.index')->with('success', 'Transaction created successfully!');

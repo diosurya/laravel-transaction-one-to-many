@@ -144,6 +144,7 @@
                     success: function (response) {
                         console.log(response);
                         $('#editProductModal').modal('hide');
+                        location.reload();
                     },
                     error: function (error) {
                         console.error(error);
